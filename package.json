@@ -1,0 +1,9 @@
+{
+  "name": "html-parser",
+  "version": "0.0.1",
+  "description": "Parse dynamic html string.",
+  "main": "dist/parser.common.js",
+  "repository": "https://github.com/wjw99830/html-parser.git",
+  "author": "wjw",
+  "license": "MIT"
+}

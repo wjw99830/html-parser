@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "alwaysStrict": true,
+    "declaration": true,
+    "declarationDir": "types",
+    "importHelpers": true,
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "downlevelIteration": true,
+    "types": [
+      "jest"
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "test"
+  ]
+}

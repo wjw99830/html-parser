@@ -1,0 +1,39 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "sourceType": "module",
+  },
+  "plugins": [
+    "@typescript-eslint",
+  ],
+  "extends": [
+    "eslint:recommended",
+  ],
+  "env": {
+    "browser": true,
+    "es6": true,
+  },
+  "rules": {
+    "no-empty": 0,
+    "curly": 2,
+    "eqeqeq": 2,
+    "no-alert": 2,
+    "no-caller": 2,
+    "no-eval": 2,
+    "no-implicit-globals": 2,
+    "no-implied-eval": 2,
+    "no-labels": 2,
+    "no-new-func": 2,
+    "no-new-wrappers": 2,
+    "no-proto": 2,
+    "no-return-await": 2,
+    "no-sequences": 2,
+    "no-useless-return": 2,
+    "prefer-named-capture-group": 1,
+    "yoda": 1,
+    "block-spacing": 1,
+    "brace-style": 1,
+    "comma-dangle": 1,
+    "no-unused-vars": 0,
+  },
+}
