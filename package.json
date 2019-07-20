@@ -1,6 +1,6 @@
 {
   "name": "@wpkg/html-parser",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Parse dynamic html string.",
   "main": "dist/parser.common.js",
   "module": "dist/parser.esm.js",
