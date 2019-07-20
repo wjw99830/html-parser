@@ -1,5 +1,6 @@
 import ts from 'rollup-plugin-typescript2';
 import pkg from './package.json';
+import { terser } from 'rollup-plugin-terser';
 
 export default {
   input: 'src/main.ts',
@@ -7,6 +8,7 @@ export default {
     ts({
       useTsconfigDeclarationDir: true,
     }),
+    terser(),
   ],
   output: [{
     file: pkg.module,
@@ -17,6 +19,6 @@ export default {
   }, {
     file: pkg.umd,
     format: 'umd',
-    name: 'Utils',
+    name: 'HTMLParser',
   }]
 };
