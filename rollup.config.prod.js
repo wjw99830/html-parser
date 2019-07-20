@@ -11,13 +11,13 @@ export default {
     terser(),
   ],
   output: [{
-    file: pkg.module,
+    file: pkg.module.replace('.js', '.min.js'),
     format: 'es',
   }, {
-    file: pkg.main,
+    file: pkg.main.replace('.js', '.min.js'),
     format: 'cjs',
   }, {
-    file: pkg.umd,
+    file: pkg.umd.replace('.js', '.min.js'),
     format: 'umd',
     name: 'HTMLParser',
   }]
