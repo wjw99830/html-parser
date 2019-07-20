@@ -1,10 +1,10 @@
 {
-  "name": "html-parser",
-  "version": "0.0.1",
+  "name": "@wpkg/html-parser",
+  "version": "0.0.2",
   "description": "Parse dynamic html string.",
   "main": "dist/parser.common.js",
   "module": "dist/parser.esm.js",
-  "umd": "dist/parser.js",
+  "umd": "dist/parser.umd.js",
   "scripts": {
     "build": "rollup -c rollup.config.dev.js",
     "uglify": "rollup -c rollup.config.prod.js",
