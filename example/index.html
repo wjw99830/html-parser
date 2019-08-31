@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="/dist/parser.umd.js"></script>
+</head>
+<body>
+  <script>
+    const fragment = HTMLParser.toDOM(`
+    <div>This node has no child.</div>
+    <div>
+      This node has children.
+      <div>I'm child.</div>
+      <!-- This is a comment -->
+    </div>
+    <div>
+      This node has nested children.
+      <!-- This is a comment -->
+      <div>
+        I'm first child.
+        <span>
+          I'm nested child.
+        </span>
+      </div>
+    </div>
+    <!-- This is a comment -->
+    `)
+    document.body.prepend(fragment);
+  </script>
+</body>
+</html>

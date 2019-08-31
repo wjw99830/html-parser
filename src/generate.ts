@@ -6,6 +6,9 @@ export const generate = (ast: Node[]) => {
     if (astNode.tag === 'text') {
       const textNode = document.createTextNode(astNode.text!);
       fragment.appendChild(textNode);
+    } else if (astNode.tag === 'comment') {
+      const commentNode = document.createComment(astNode.text);
+      fragment.appendChild(commentNode);
     } else {
       const elm = document.createElement(astNode.tag);
       for (const attr of astNode.attrs) {

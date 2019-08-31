@@ -6,6 +6,7 @@
   "module": "dist/parser.esm.js",
   "umd": "dist/parser.umd.js",
   "scripts": {
+    "dev": "rollup -c rollup.config.dev.js --watch",
     "build": "rollup -c rollup.config.dev.js",
     "uglify": "rollup -c rollup.config.prod.js",
     "lint": "eslint --fix",

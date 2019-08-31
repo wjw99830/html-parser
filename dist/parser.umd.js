@@ -9,45 +9,75 @@
   const attrSingleQuote = new RegExp(`${tagOrAttrName.source}='[^\']*'`);
   const attrNoneQuote = new RegExp(`${tagOrAttrName.source}`);
   const attr = new RegExp(`(${attrDoubleQuote.source})|(${attrSingleQuote.source})|(${attrNoneQuote.source})`);
-  const startTag = new RegExp(`(?<tagName>${tagOrAttrName.source})`);
-  const endTag = /<\/\k<tagName>>/;
-  const tag = new RegExp(`<${startTag.source}( +(?<attrs>${attr.source}))* *>(?<children>.*?)${endTag.source}`);
-  const tagGlobal = new RegExp(`${tag.source}`, 'g');
-  const parse = (template) => {
-      template = template.replace(/[\n\r]/g, '');
-      const nodes = template.match(tagGlobal);
+  const startTag = `<${tagOrAttrName.source}( +(${attr.source}))* *>`;
+  const beginTagStart = `^\\<(${tagOrAttrName.source})`;
+  const endTagStart = `^</(${tagOrAttrName.source})>`;
+  const comment = /^(<!--(.*?)-->)/;
+  function parse(template) {
+      template = template.replace(/[\n\r]/g, '').trim();
       const ast = [];
-      if (nodes) {
-          for (const node of nodes) {
-              const matched = node.match(tag);
-              const { tagName, children } = matched.groups;
-              const attrs = matched.groups.attrs || '';
-              const astNode = {
-                  tag: tagName,
-                  attrs: [],
-                  children: [],
-              };
-              for (const attribute of attrs.match(new RegExp(attr, 'g')) || []) {
-                  let [key, value] = attribute.split('=');
-                  value = value ? value.replace(/["']/g, '') : '';
-                  astNode.attrs.push({
-                      key, value,
+      const stack = [];
+      while (template) {
+          let textMatch;
+          let endTagMatch;
+          let startTagMatch;
+          let commentMatch;
+          if (commentMatch = template.match(comment)) {
+              const node = new Node('comment');
+              node.text = commentMatch[2];
+              inTree(node);
+              advance(commentMatch[0].length);
+          }
+          else if (startTagMatch = template.match(new RegExp(beginTagStart))) {
+              const tag = startTagMatch[1];
+              let endTagStartIndex = template.match(new RegExp(startTag))[0].length;
+              const attrsMatch = template.slice(0, endTagStartIndex).replace(tag, '').match(new RegExp(attr.source, 'g'));
+              const node = new Node(tag);
+              if (attrsMatch) {
+                  node.attrs = attrsMatch.map(attr => {
+                      let equalIndex = attr.indexOf('=');
+                      equalIndex = equalIndex < 0 ? attr.length : equalIndex;
+                      const key = attr.slice(0, equalIndex).replace(/[:@]/, '');
+                      const value = attr.slice(equalIndex + 1).replace(/[\"\'"]/g, '');
+                      return { key, value };
                   });
               }
-              astNode.children = parse(children);
-              ast.push(astNode);
+              inTree(node);
+              stack.push(node);
+              advance(endTagStartIndex);
+          }
+          else if (endTagMatch = template.match(new RegExp(endTagStart))) {
+              stack.pop();
+              advance(endTagMatch[0].length);
+          }
+          else if (textMatch = template.match(new RegExp('^[^<]*'))) {
+              const beginTagStartIndex = template.indexOf('<');
+              const node = new Node('text');
+              node.text = textMatch[0];
+              inTree(node);
+              advance(beginTagStartIndex);
           }
       }
-      else {
-          ast.push({
-              tag: 'text',
-              text: template,
-              attrs: [],
-              children: [],
-          });
+      function advance(terminus) {
+          template = template.slice(terminus);
+      }
+      function inTree(node) {
+          if (!stack.length) {
+              ast.push(node);
+          }
+          else {
+              stack[stack.length - 1].children.push(node);
+          }
       }
       return ast;
-  };
+  }
+  class Node {
+      constructor(tag) {
+          this.attrs = [];
+          this.children = [];
+          this.tag = tag;
+      }
+  }
 
   const generate = (ast) => {
       const fragment = document.createDocumentFragment();
@@ -55,6 +85,10 @@
           if (astNode.tag === 'text') {
               const textNode = document.createTextNode(astNode.text);
               fragment.appendChild(textNode);
+          }
+          else if (astNode.tag === 'comment') {
+              const commentNode = document.createComment(astNode.text);
+              fragment.appendChild(commentNode);
           }
           else {
               const elm = document.createElement(astNode.tag);
@@ -68,12 +102,14 @@
       return fragment;
   };
 
-  const transform = (template) => {
+  function toDOM(template) {
       const ast = parse(template);
       return generate(ast);
-  };
+  }
 
-  exports.transform = transform;
+  exports.generate = generate;
+  exports.parse = parse;
+  exports.toDOM = toDOM;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
