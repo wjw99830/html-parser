@@ -6,29 +6,43 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <script src="/dist/parser.umd.js"></script>
+  <style>
+    pre {
+      font-family: Consolas;
+    }
+  </style>
 </head>
 <body>
   <script>
-    const fragment = HTMLParser.toDOM(`
-    <div>This node has no child.</div>
-    <div>
-      This node has children.
-      <div>I'm child.</div>
-      <!-- This is a comment -->
-    </div>
-    <div>
-      This node has nested children.
-      <!-- This is a comment -->
-      <div>
-        I'm first child.
-        <span>
-          I'm nested child.
-        </span>
+    const html = `
+    <pre>
+      <div>This node has no child.</div>
+      <div>This node has children.
+        <div>
+          I'm child.
+        </div>
+        <!-- This is a comment -->
       </div>
-    </div>
-    <!-- This is a comment -->
-    `)
+      <div>This node has nested children.
+        <!-- This is a comment -->
+        <div>
+          I'm first child.
+          <div>
+            I'm nested child.
+          </div>
+        </div>
+      </div>
+      <!-- This is a comment -->
+    </pre>
+    `;
+    const ast = JSON.stringify(HTMLParser.parse(html), null, 2);
+    const pre = document.createElement('pre');
+    pre.textContent = ast;
+    document.body.append('AST:');
+    document.body.appendChild(pre);
+    const fragment = HTMLParser.toDOM(html);
     document.body.prepend(fragment);
+    document.body.prepend('DOM:');
   </script>
 </body>
 </html>
